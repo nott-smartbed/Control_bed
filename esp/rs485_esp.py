@@ -1,3 +1,4 @@
+
 from machine import Pin, PWM, UART
 from utime import sleep, ticks_ms
 from libT import delayT_ms
@@ -142,19 +143,19 @@ def DC4_CONTROL(mode):
         if DC4_STATUS() == (0,0,1):
             print("Max DC4")
             mode = brake
-    control_Motor(mode,40,1,36)
- 
+    control_Motor(mode,40,1,36) 
+
 def reset_lo():
     global prelean,prefoot, prehead
     
     print("Reseting...")
     
-    if(DC3_STATUS() == (0,1,0)):
+    if(DC4_STATUS() == (0,1,0)):
         
         while(DC2_STATUS() != (1,0)):
             DC2_CONTROL(reverse)
         DC2_CONTROL(brake)
-        DC3_CONTROL(brake)
+        DC4_CONTROL(brake)
         prelean = 0
         prehead = 0
         prefoot = 0
@@ -163,15 +164,15 @@ def reset_lo():
         return True
     
     elif (DC2_STATUS() == (1,0)):
-        while(DC3_STATUS() != (1,0,0)):
-            DC3_CONTROL(reverse)
-        DC3_CONTROL(brake)
-        print("DC3_STATUS: ",DC3_STATUS())
+        while(DC4_STATUS() != (1,0,0)):
+            DC4_CONTROL(reverse)
+        DC4_CONTROL(brake)
+        print("DC4_STATUS: ",DC4_STATUS())
         delayT_ms(1000)
-        while(DC3_STATUS() != (0,1,0)):
-            DC3_CONTROL(forward)
-        DC3_CONTROL(brake)
-        print("DC3_STATUS: ",DC3_STATUS())
+        while(DC4_STATUS() != (0,1,0)):
+            DC4_CONTROL(forward)
+        DC4_CONTROL(brake)
+        print("DC4_STATUS: ",DC4_STATUS())
         prelean = 0
         prehead = 0
         prefoot = 0
@@ -180,10 +181,10 @@ def reset_lo():
         return True
     else:
         while True:
-            if DC2_STATUS() == (1,0) or DC3_STATUS() == (0,1,0):
+            if DC2_STATUS() == (1,0) or DC4_STATUS() == (0,1,0):
                 print("Correct value!")
                 break
-            DC3_CONTROL(brake)
+            DC4_CONTROL(brake)
             DC2_CONTROL(brake)
         print("Reset fail!")
         return False
@@ -197,11 +198,11 @@ def Init_program():
     print("Initializating...")
     DC1_CONTROL(2)
     DC2_CONTROL(2)
-    DC3_CONTROL(2)
+    DC4_CONTROL(2)
     DC4_CONTROL(2)
     delayT_ms(500)
     
-    if (DC2_STATUS() != (0,1)) or (DC3_STATUS() != (0,1,0)):
+    if (DC2_STATUS() != (0,1)) or (DC4_STATUS() != (0,1,0)):
         while(reset_lo()==False):
             reset_lo()
     print("Reset: ",reset_lo())
@@ -219,14 +220,14 @@ def Init_program():
         
     Up_max3 = 0
     time_up_3 = ticks_ms()
-    while (DC3_STATUS() != (0,0,1)):
-        DC3_CONTROL(forward)
+    while (DC4_STATUS() != (0,0,1)):
+        DC4_CONTROL(forward)
     Up_max3 += (ticks_ms() - time_up_3)
-    DC3_CONTROL(brake)
+    DC4_CONTROL(brake)
     delayT_ms(1000)
-    while (DC3_STATUS() != (0,1,0)):
-        DC3_CONTROL(reverse)
-    DC3_CONTROL(brake)
+    while (DC4_STATUS() != (0,1,0)):
+        DC4_CONTROL(reverse)
+    DC4_CONTROL(brake)
     print(f"Up_max2: {Up_max2}, Up_max3: {Up_max3}, Up_max3: {Up_max3}")
 
 
@@ -235,7 +236,7 @@ def run_ver1():
     # global paused
     global prelean, prefoot, prehead, lean, foot, head
     print("Start...")
-    # if (DC2_STATUS() != (0,1)) or (DC3_STATUS() != (0,1,0)):
+    # if (DC2_STATUS() != (0,1)) or (DC4_STATUS() != (0,1,0)):
     #     while(reset_lo()==False):
     #         reset_lo()
     #print("Reset: ",reset_lo())
@@ -248,26 +249,26 @@ def run_ver1():
         if lean == 0:
             print("lean == 0")
 
-            print("DC3 --> 0 1 0\n")
-            while(DC3_STATUS() != (0,1,0)):
+            print("DC4 --> 0 1 0\n")
+            while(DC4_STATUS() != (0,1,0)):
                 if (prelean - lean < 0):
                     # delayT_ms(1000)
-                    # print("DC3_CONTROL(forward)")
+                    # print("DC4_CONTROL(forward)")
                     # time_forward = abs(prelean - lean)
-                    # while(DC3_STATUS() != (0,1,0)):
-                    DC3_CONTROL(forward)
+                    # while(DC4_STATUS() != (0,1,0)):
+                    DC4_CONTROL(forward)
                     # prelean += (ticks_ms() - time_up_3)
                     # print("lean - prelean",lean-prelean)
                 else:
                     # delayT_ms(1000)
-                    # print("DC3_CONTROL(reverse)")
+                    # print("DC4_CONTROL(reverse)")
                     # time_down_3 = ticks_ms()
-                    # while(DC3_STATUS() != (0,1,0)):
-                    DC3_CONTROL(reverse)
+                    # while(DC4_STATUS() != (0,1,0)):
+                    DC4_CONTROL(reverse)
                     # prelean -= (ticks_ms() - time_down_3)
                     # print("lean - prelean",lean-prelean)
 
-            DC3_CONTROL(brake)
+            DC4_CONTROL(brake)
             prelean = 0
 
             print("check DC2")
@@ -313,17 +314,17 @@ def run_ver1():
             prefoot = 0
             if (prelean - lean < 0):
                 delayT_ms(1000)
-                print("DC3_CONTROL(forward)")
+                print("DC4_CONTROL(forward)")
                 time_forward = abs(prelean - lean)
-                DC3_CONTROL(forward)
+                DC4_CONTROL(forward)
                 delayT_ms(time_forward)
             else:
                 delayT_ms(1000)
-                print("DC3_CONTROL(reverse)")
+                print("DC4_CONTROL(reverse)")
                 time_reverse = abs(prelean - lean)
-                DC3_CONTROL(reverse)
+                DC4_CONTROL(reverse)
                 delayT_ms(time_reverse)
-            DC3_CONTROL(brake)
+            DC4_CONTROL(brake)
             print(f"head: {head}, prehead: {prehead}, foot: {foot}, prefoot: {prefoot}, lean: {lean}, prelean:{prelean}")
 
     
@@ -331,17 +332,17 @@ print("Stop all!\n")
 DC1_CONTROL(2)
 DC2_CONTROL(2)
 DC3_CONTROL(2)
-DC3_CONTROL(2)
+DC4_CONTROL(2)
 delayT_ms(500)
 while(reset_lo()==False):
     pass
 while True:
     #
-    #print(DC3_STATUS())
+    #print(DC4_STATUS())
     # print(DC1_STATUS())
     # print(DC2_STATUS())
     # print(DC3_STATUS())
-    # print(DC3_STATUS())
+    # print(DC4_STATUS())
     # delayT_ms(1000)
     # if first_time:
     #     Init_program()
