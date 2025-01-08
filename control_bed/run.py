@@ -36,20 +36,9 @@ try:
 
     while True:
         # Bật LED ESP1
-        send_and_wait(ser, "1:LED_ON\n", "1:ACK_LED_ON")
+        send_and_wait(ser, "Forward Frame\n", "Receive frame")
         time.sleep(0.5)
 
-        # Bật LED ESP2
-        send_and_wait(ser, "2:LED_ON\n", "2:ACK_LED_ON")
-        time.sleep(0.5)
-
-        # Tắt LED ESP1
-        send_and_wait(ser, "1:LED_OFF\n", "1:ACK_LED_OFF")
-        time.sleep(0.5)
-
-        # Tắt LED ESP2
-        send_and_wait(ser, "2:LED_OFF\n", "2:ACK_LED_OFF")
-        time.sleep(0.5)
 
 except serial.SerialException as e:
     logging.error(f"Serial error: {e}")
