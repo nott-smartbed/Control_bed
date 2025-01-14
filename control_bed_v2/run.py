@@ -13,6 +13,7 @@ previous_states = {}
 states_list = []
 
 def get_states():
+    global states_list
     headers = {
         "Authorization": f"Bearer {HA_TOKEN}",
         "Content-Type": "application/json",
@@ -102,6 +103,7 @@ try:
 
     while True:
         # Bật LED ESP1
+        get_states()
         send_and_wait(ser, f"{states_list}\n", "done")
         time.sleep(0.5)
 
