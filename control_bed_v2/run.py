@@ -83,8 +83,8 @@ def send_and_wait(ser, command, timeout=0.5):
             if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
                 response = ser.readline().strip()
                 logging.info(f"Received: {response}")
-                ser.write(command)
-                logging.info(f"Sent: {command.strip()}")
+            ser.write(command)
+            logging.info(f"Sent: {command.strip()}")
         return
 
 while True:
