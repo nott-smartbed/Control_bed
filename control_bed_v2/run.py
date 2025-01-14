@@ -101,7 +101,7 @@ def send_and_wait(ser, command, expected_response, timeout=0.1):
 
 try:
     # Mở cổng serial
-    ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=1)
+    ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.1)
     logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
 
     while True:
