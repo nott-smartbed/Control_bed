@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 RUN pip install requests
+RUN pip install pyserial
 
 COPY run.py /run.py
 
