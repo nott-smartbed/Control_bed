@@ -1,18 +1,19 @@
 import requests
+import serial
 import logging
 import time
 
-# Cấu hình logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Thay đổi URL và token của bạn
+SERIAL_PORT = "/dev/ttyAMA0"
+BAUDRATE = 9600
 HA_URL = "http://192.168.100.42:8123/api/states"
 HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjZGE0OTdhN2QyNWM0NjYxOTgzMmJhNGJhOGNlYmE2NiIsImlhdCI6MTczNjc0ODQzMywiZXhwIjoyMDUyMTA4NDMzfQ.MF7qOcUrcbvrLELABfxlLqXLDDjjSGER57TbKUA6E7U"
 
-# Khởi tạo từ điển để lưu trữ giá trị trước đó
 previous_states = {}
+states_list = []
 
-def fetch_states():
+def get_states():
     headers = {
         "Authorization": f"Bearer {HA_TOKEN}",
         "Content-Type": "application/json",
@@ -45,16 +46,18 @@ def fetch_states():
                 if entity_id not in previous_states or previous_states[entity_id] != current_value:
                     logging.info(f"{entity_id}: {current_value}")
                     previous_states[entity_id] = current_value  # Cập nhật giá trị trước đó
+                    states_list.append((entity_id, current_value))
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
 
-def set_values():
+    return states_list
+
+def set_values(value):
     headers = {
         "Authorization": f"Bearer {HA_TOKEN}",
         "Content-Type": "application/json",
     }
     entities = ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']
-    value = 60
 
     for entity_id in entities:
         url = f"{HA_URL}/{entity_id}"
@@ -66,8 +69,41 @@ def set_values():
         except requests.exceptions.RequestException as e:
             logging.error(f"Error setting value for {entity_id}: {e}")
 
-if __name__ == '__main__':
+
+
+def send_and_wait(ser, command, timeout=0.5):
+    """
+    Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
+    """
     while True:
-        fetch_states()
-        set_values()  # Gọi hàm để đặt giá trị
-        time.sleep(2)  # Lặp lại mỗi 60 giây
+        ser.write(command)
+
+        # Chờ phản hồi
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
+                response = ser.readline().strip()
+                logging.info(f"Received: {response}")
+                ser.write(command)
+                logging.info(f"Sent: {command.strip()}")
+        return
+
+while True:
+
+    try:
+        # Mở cổng serial
+        ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.5)
+        logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
+
+        while True:
+            send_and_wait(ser, states_list)
+            time.sleep(0.5)
+
+    except serial.SerialException as e:
+        logging.error(f"Serial error: {e}")
+    except KeyboardInterrupt:
+        logging.info("Program interrupted by user.")
+    finally:
+        if "ser" in locals() and ser.is_open:
+            ser.close()
+            logging.info("Serial port closed.")

@@ -37,7 +37,7 @@ def send_signal_continuously(message, interval=1):
 
 if __name__ == "__main__":
     # Chuỗi tín hiệu cần gửi
-    message = "156697"  # Kết thúc bằng \n để tương thích với readline() bên nhận
+    message = "60"  # Kết thúc bằng \n để tương thích với readline() bên nhận
     interval = 1  # Khoảng thời gian giữa các lần gửi (giây)
     send_signal_continuously(message, interval)
 
