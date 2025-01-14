@@ -70,4 +70,4 @@ if __name__ == '__main__':
     while True:
         fetch_states()
         set_values()  # Gọi hàm để đặt giá trị
-        time.sleep(5)  # Lặp lại mỗi 60 giây
+        time.sleep(2)  # Lặp lại mỗi 60 giây
