@@ -1,0 +1,17 @@
+alias: Switch ON OFF
+description: Khi OFF thi pause = false
+triggers:
+  - entity_id:
+      - input_boolean.start_stop
+    trigger: state
+    from: "on"
+    to: "off"
+conditions: []
+actions:
+  - target:
+      entity_id: |
+        {% set entity_map = {
+          'input_boolean.start_stop': ['input_boolean.pause_continue']
+        } %} {{ entity_map[trigger.entity_id] }}
+    action: input_boolean.turn_off
+mode: single

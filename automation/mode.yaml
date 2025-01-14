@@ -1,0 +1,25 @@
+alias: Switch Modes
+description: only 1 mode operating ... 
+triggers:
+  - entity_id:
+      - input_boolean.mode_1
+      - input_boolean.mode_2
+      - input_boolean.mode_3
+      - input_boolean.mode_4
+      - input_boolean.mode_5
+      - input_boolean.custom
+    trigger: state
+conditions: []
+actions:
+  - target:
+      entity_id: |
+        {% set entity_map = {
+          'input_boolean.mode_1': ['input_boolean.mode_2', 'input_boolean.mode_3', 'input_boolean.mode_4', 'input_boolean.mode_5', 'input_boolean.custom'],
+          'input_boolean.mode_2': ['input_boolean.mode_1', 'input_boolean.mode_3', 'input_boolean.mode_4', 'input_boolean.mode_5', 'input_boolean.custom'],
+          'input_boolean.mode_3': ['input_boolean.mode_1', 'input_boolean.mode_2', 'input_boolean.mode_4', 'input_boolean.mode_5', 'input_boolean.custom'],
+          'input_boolean.mode_4': ['input_boolean.mode_1', 'input_boolean.mode_2', 'input_boolean.mode_3', 'input_boolean.mode_5', 'input_boolean.custom'],
+          'input_boolean.mode_5': ['input_boolean.mode_1', 'input_boolean.mode_2', 'input_boolean.mode_3', 'input_boolean.mode_4', 'input_boolean.custom'],
+          'input_boolean.custom': ['input_boolean.mode_1', 'input_boolean.mode_2', 'input_boolean.mode_3', 'input_boolean.mode_4', 'input_boolean.mode_5']
+        } %} {{ entity_map[trigger.entity_id] }}
+    action: input_boolean.turn_off
+mode: single
