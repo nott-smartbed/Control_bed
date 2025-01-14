@@ -77,7 +77,6 @@ def send_and_wait(ser, command, timeout=0.5):
     """
     while True:
         ser.write(command)
-
         # Chờ phản hồi
         start_time = time.time()
         while time.time() - start_time < timeout:
@@ -96,7 +95,7 @@ while True:
         logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
 
         while True:
-            send_and_wait(ser, states_list)
+            send_and_wait(ser, "3")
             time.sleep(0.5)
 
     except serial.SerialException as e:
