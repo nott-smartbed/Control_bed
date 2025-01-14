@@ -11,6 +11,12 @@ HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjZGE0OTdhN2QyNWM0NjY
 
 previous_states = {}
 
+# Cấu hình logging
+logging.basicConfig(
+    level=logging.INFO,  # Thay đổi thành DEBUG để xem nhiều thông tin hơn
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
 
 def get_states():
     states_list = []
@@ -41,12 +47,12 @@ def get_states():
             if state['entity_id'] in valid_entity_ids:
                 current_value = state['state']
                 entity_id = state['entity_id']
-                
+                states_list.append((current_value))
                 # So sánh với giá trị trước đó
                 if entity_id not in previous_states or previous_states[entity_id] != current_value:
                     logging.info(f"{entity_id}: {current_value}")
                     previous_states[entity_id] = current_value  # Cập nhật giá trị trước đó
-                    states_list.append((current_value))
+                    
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
 
@@ -69,32 +75,29 @@ def set_values(value):
         except requests.exceptions.RequestException as e:
             logging.error(f"Error setting value for {entity_id}: {e}")
 
-# Cấu hình logging
-logging.basicConfig(
-    level=logging.INFO,  # Thay đổi thành DEBUG để xem nhiều thông tin hơn
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-)
+
+# while True:
+#     get_states()
 
 # Cấu hình cổng UART
 SERIAL_PORT = '/dev/ttyAMA0'  # Cổng UART0 trên Orange Pi
 BAUDRATE = 9600
 
-def send_and_wait(ser, command, expected_response, timeout=1):
-    while True:
-        # Gửi lệnh qua RS485
-        ser.write(command.encode('utf-8'))
-        logging.info(f"Sent: {command.strip()}")
+def send_and_wait(ser, command, expected_response, timeout=0.1):
+    # while True:
+    # Gửi lệnh qua RS485
+    ser.write(command.encode('utf-8'))
+    logging.info(f"Sent: {command.strip()}")
 
-        # Chờ phản hồi
-        start_time = time.time()  # Bắt đầu tính thời gian
-        while time.time() - start_time < timeout:
-            if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
-                response = ser.readline().decode('utf-8').strip()
-                logging.info(f"Received: {response}")
-                if response == expected_response:  # Kiểm tra phản hồi đúng
-                    return True
-        logging.warning("No valid response, resending...")  # Nếu không nhận được phản hồi đúng, gửi lại lệnh
+    # Chờ phản hồi
+    start_time = time.time()  # Bắt đầu tính thời gian
+    while time.time() - start_time < timeout:
+        if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
+            response = ser.readline().decode('utf-8').strip()
+            logging.info(f"Received: {response}")
+            if response == expected_response:  # Kiểm tra phản hồi đúng
+                return True
+    logging.warning("No valid response, resending...")  # Nếu không nhận được phản hồi đúng, gửi lại lệnh
 
 try:
     # Mở cổng serial
@@ -103,8 +106,11 @@ try:
 
     while True:
         # Bật LED ESP1
-        states_list = get_states()
-        send_and_wait(ser, f"{states_list}\n", "done")
+        # states_list = []
+        # print("check point")
+        # states_list = get_states()
+        logging.info(f"Gia tri: {get_states()}\n")
+        send_and_wait(ser, f"{get_states()}\n", "done")
 
 except serial.SerialException as e:
     logging.error(f"Serial error: {e}")
