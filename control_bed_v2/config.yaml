@@ -1,7 +1,7 @@
 
 name: "My Custom Addon"
 description: "Addon to handle button input"
-version: "1.0.13"
+version: "1.0.14"
 slug: "my_buttons_addon"
 init: false
 arch:

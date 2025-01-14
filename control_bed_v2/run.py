@@ -71,20 +71,17 @@ def set_values(value):
 
 
 
-def send_and_wait(ser, command, timeout=0.5):
+def send_and_wait(ser, command):
     """
     Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
     """
     while True:
         ser.write(command)
-        # Chờ phản hồi
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            if ser.in_waiting > 0:  # Nếu có dữ liệu trong buffer
-                response = ser.readline().strip()
-                logging.info(f"Received: {response}")
-            ser.write(command)
-            logging.info(f"Sent: {command.strip()}")
+        time.sleep(0.2)
+        response = ser.readline().strip()
+        time.sleep(0.1)
+        logging.info(f"Received: {response}")
+        logging.info(f"Sent: {command.strip()}")
         return
 
 while True:
@@ -96,7 +93,7 @@ while True:
 
         while True:
             send_and_wait(ser, "3")
-            time.sleep(0.5)
+            
 
     except serial.SerialException as e:
         logging.error(f"Serial error: {e}")
