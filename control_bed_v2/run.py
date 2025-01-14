@@ -22,10 +22,22 @@ def fetch_states():
         response = requests.get(HA_URL, headers=headers)
         response.raise_for_status()  # Kiểm tra lỗi HTTP
         states = response.json()
-        
+        valid_entity_ids = [
+            'input_number.head',
+            'input_number.lean',
+            'input_number.foot',
+            'input_boolean.mode_1',
+            'input_boolean.mode_2',
+            'input_boolean.mode_3',
+            'input_boolean.mode_4',
+            'input_boolean.mode_5',
+            'input_boolean.custom',
+            'input_boolean.pause_continue',
+            'input_boolean.start_stop'
+        ]
         # In ra giá trị của các thực thể cụ thể
         for state in states:
-            if state['entity_id'] in ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']:
+            if state['entity_id'] in valid_entity_ids:
                 current_value = state['state']
                 entity_id = state['entity_id']
                 
@@ -42,7 +54,7 @@ def set_values():
         "Content-Type": "application/json",
     }
     entities = ['input_number.head_current', 'input_number.lean_current', 'input_number.foot_current']
-    value = 50
+    value = 60
 
     for entity_id in entities:
         url = f"{HA_URL}/{entity_id}"
