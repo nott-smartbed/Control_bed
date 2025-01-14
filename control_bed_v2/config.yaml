@@ -1,7 +1,7 @@
 
 name: "My Custom Addon"
 description: "Addon to handle button input"
-version: "1.0.11"
+version: "1.0.12"
 slug: "my_buttons_addon"
 init: false
 arch:
@@ -12,6 +12,9 @@ arch:
   - i386
 startup: application
 boot: manual
+devices:
+  - "/dev/ttyAMA0:/dev/ttyAMA0:rwm"
+  - "/dev/gpiochip0:/dev/gpiochip0:rwm"
 ports:
   8000/tcp: 8000
 
