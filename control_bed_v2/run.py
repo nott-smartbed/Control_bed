@@ -72,11 +72,9 @@ def set_values(value):
 
 
 def send_and_wait(ser, command):
-    """
-    Gửi lệnh qua serial và chờ phản hồi đúng trong một khoảng thời gian.
-    """
+    command_bytes = command.encode('utf-8') 
     while True:
-        ser.write(command)
+        ser.write(command_bytes) 
         time.sleep(0.2)
         response = ser.readline().strip()
         time.sleep(0.1)
