@@ -46,7 +46,7 @@ def get_states():
                 if entity_id not in previous_states or previous_states[entity_id] != current_value:
                     logging.info(f"{entity_id}: {current_value}")
                     previous_states[entity_id] = current_value  # Cập nhật giá trị trước đó
-                    states_list.append((entity_id, current_value))
+                    states_list.append((current_value))
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching data: {e}")
 
