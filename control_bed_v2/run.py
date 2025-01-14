@@ -10,10 +10,10 @@ HA_URL = "http://192.168.100.42:8123/api/states"
 HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjZGE0OTdhN2QyNWM0NjYxOTgzMmJhNGJhOGNlYmE2NiIsImlhdCI6MTczNjc0ODQzMywiZXhwIjoyMDUyMTA4NDMzfQ.MF7qOcUrcbvrLELABfxlLqXLDDjjSGER57TbKUA6E7U"
 
 previous_states = {}
-states_list = []
+
 
 def get_states():
-    global states_list
+    states_list = []
     headers = {
         "Authorization": f"Bearer {HA_TOKEN}",
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ try:
 
     while True:
         # Bật LED ESP1
-        get_states()
+        states_list = get_states()
         send_and_wait(ser, f"{states_list}\n", "done")
 
 except serial.SerialException as e:
