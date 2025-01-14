@@ -80,7 +80,7 @@ logging.basicConfig(
 SERIAL_PORT = '/dev/ttyAMA0'  # Cổng UART0 trên Orange Pi
 BAUDRATE = 9600
 
-def send_and_wait(ser, command, expected_response, timeout=5):
+def send_and_wait(ser, command, expected_response, timeout=1):
     while True:
         # Gửi lệnh qua RS485
         ser.write(command.encode('utf-8'))
@@ -105,7 +105,6 @@ try:
         # Bật LED ESP1
         get_states()
         send_and_wait(ser, f"{states_list}\n", "done")
-        time.sleep(0.5)
 
 except serial.SerialException as e:
     logging.error(f"Serial error: {e}")
