@@ -1,18 +1,20 @@
-name: "RS485"
-version: "1.0.1"
-slug: "gpio_addon"
-description: "Control bed through RS485 protocol "
+
+name: "My Custom Addon"
+description: "Addon to handle button input"
+version: "1.0.24"
+slug: "my_buttons_addon"
+init: false
 arch:
-  - armhf
-  - armv7
   - aarch64
   - amd64
+  - armhf
+  - armv7
+  - i386
 startup: application
 boot: manual
-
 devices:
   - "/dev/ttyAMA0:/dev/ttyAMA0:rwm"
   - "/dev/gpiochip0:/dev/gpiochip0:rwm"
+ports:
+  8000/tcp: 8000
 
-options: {}
-schema: {}

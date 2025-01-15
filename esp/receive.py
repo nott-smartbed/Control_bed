@@ -11,7 +11,7 @@ def receive_signal_continuously():
     ser = None  # Khởi tạo biến ser
     try:
         # Mở cổng serial
-        ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=1)
+        ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.05)
         print(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
         
         while True:
