@@ -1,0 +1,28 @@
+
+name: "My Save Mode"
+description: "Save and load data"
+version: "1.0.0"
+slug: "my_save_mode"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+startup: application
+boot: manual
+devices:
+  - "/dev/ttyAMA0:/dev/ttyAMA0:rwm"
+  - "/dev/gpiochip0:/dev/gpiochip0:rwm"
+ports:
+  8000/tcp: 8000
+
+# options:
+#   head:
+#     description: "Angle of the head section (0-100)"
+#     type: int
+#     required: true
+#     example: 50
+# schema:
+#   head: int

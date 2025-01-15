@@ -17,7 +17,26 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
 )
+# Xử lý dữ liệu dùng để chuyển input dạng string sang list
+def process_input(input_str):
+    # Chuyển chuỗi thành list
+    input_list = eval(input_str)
 
+    output_list = []
+    for item in input_list:
+        if item == 'on':
+            output_list.append(1)
+        elif item == 'off':
+            output_list.append(0)
+        else:
+            try:
+                # Chuyển đổi các giá trị số dưới dạng chuỗi thành int (số nguyên)
+                output_list.append(int(float(item)))  # Chuyển thành float trước, sau đó chuyển thành int
+            except ValueError:
+                # Nếu không thể chuyển đổi thành int, giữ nguyên chuỗi
+                output_list.append(item)
+
+    return output_list
 def get_states():
     states_list = []
     headers = {
@@ -37,7 +56,7 @@ def get_states():
             'input_boolean.mode_2',
             'input_boolean.mode_3',
             'input_boolean.mode_4',
-            'input_boolean.mode_5',
+            'input_boolean.mode_5', 
             'input_boolean.custom',
             'input_boolean.pause_continue',
             'input_boolean.start_stop'
@@ -101,14 +120,10 @@ def send_and_wait(ser, command, expected_response, timeout=0.1):
 
 try:
     # Mở cổng serial
-    ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.1)
+    ser = serial.Serial(SERIAL_PORT, baudrate=BAUDRATE, timeout=0.4 )
     logging.info(f"Connected to {SERIAL_PORT} at {BAUDRATE} baudrate.")
 
     while True:
-        # Bật LED ESP1
-        # states_list = []
-        # print("check point")
-        # states_list = get_states()
         logging.info(f"Gia tri: {get_states()}\n")
         send_and_wait(ser, f"{get_states()}\n", "done")
 

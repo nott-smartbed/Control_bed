@@ -1,7 +1,7 @@
 import serial
 
 # Cấu hình cổng USB-RS485
-SERIAL_PORT = 'COM7'  # Thay đổi thành cổng COM của bạn
+SERIAL_PORT = 'COM6'  # Thay đổi thành cổng COM của bạn
 BAUDRATE = 9600
 
 def receive_signal_continuously():
