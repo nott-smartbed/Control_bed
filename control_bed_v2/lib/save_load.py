@@ -2,8 +2,7 @@ import json
 import logging
 
 # Tệp JSON lưu trữ dữ liệu
-# FILE_PATH = "/data/data.json"
-FILE_PATH = "Save_mode/data.json"
+FILE_PATH = "/data/data.json"
 
 # Cấu hình logging
 logging.basicConfig(
@@ -59,33 +58,18 @@ def load_mode_values(mode):
         # Kiểm tra mode có tồn tại trong dữ liệu không
         if mode in data:
             values = data[mode]
-            print(f"Giá trị của mode '{mode}': head={values['head']}, lean={values['lean']}, foot={values['foot']}")
+            logging.info(f"Giá trị của mode '{mode}': head={values['head']}, lean={values['lean']}, foot={values['foot']}")
             return values
         else:
-            print(f"Mode '{mode}' không tồn tại trong dữ liệu.")
+            logging.info(f"Mode '{mode}' không tồn tại trong dữ liệu.")
             return None
 
     except FileNotFoundError:
-        print(f"Tệp '{FILE_PATH}' không tồn tại.")
+        logging.info(f"Tệp '{FILE_PATH}' không tồn tại.")
     except json.JSONDecodeError:
-        print(f"Lỗi khi đọc tệp JSON '{FILE_PATH}'.")
+        logging.info(f"Lỗi khi đọc tệp JSON '{FILE_PATH}'.")
     except Exception as e:
-        print(f"Lỗi không xác định: {e}")
+        logging.info(f"Lỗi không xác định: {e}")
         return None
 
 
-# Ví dụ sử dụng
-if __name__ == "__main__":
-    # Đầu vào để cập nhật
-    input_mode = "mode_1"
-    input_values = "20 20 30"
-
-    # Chuyển đổi giá trị input
-    head, lean, foot = map(int, input_values.split())
-
-    # Cập nhật giá trị
-    update_mode_values(input_mode, head, lean, foot)
-
-    # Tải giá trị từ file
-    x = load_mode_values(input_mode)
-    print(x)
